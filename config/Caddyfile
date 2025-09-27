@@ -1,5 +1,23 @@
-n8n.<domain>.<suffix> {
+n8n.solutions.com, www.n8n.solutions.com {
     reverse_proxy n8n:5678 {
       flush_interval -1
     }
+}
+
+solutions.com, www.solutions.com {
+    @blockbots {
+        path /wordpress/wp-admin/setup-config.php
+        path /wp-admin/setup-config.php
+    }
+    respond @blockbots 410
+
+    reverse_proxy app:3000
+
+    rate_limit {
+        zone dynamic_zone {
+            key {http.request.remote_ip}
+            events 4
+            window 2s
+        }
+    }
 }
